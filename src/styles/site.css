@@ -105,3 +105,6 @@ footer { border-top: 1px solid var(--line); }
   .lead { font-size: 19px; }
 }
 .card p + p { margin-top: 12px; }
+
+/* Community figure at two thirds of its column (user, 2026-11-06) */
+.split img.community-figure { width: 67%; margin: 0 auto; }
