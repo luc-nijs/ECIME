@@ -1,9 +1,17 @@
 ---
 import Base from '../layouts/Base.astro';
 import CommunityNav from '../components/CommunityNav.astro';
+import CommunityList from '../components/CommunityList.astro';
+import CommunityForm from '../components/CommunityForm.astro';
 ---
-<Base title="Organisations | ECiME Community" description="Organisations in the ECiME community on instrumental music teaching and learning in early childhood." path="/organisations" parent="/community" heading="Organisations">
+<Base title="Organisations | ECiME Community" description="Schools, music schools, conservatories, universities and associations working on instrumental music education in early childhood." path="/organisations" parent="/community" heading="Organisations">
   <section class="wrap">
     <CommunityNav path="/organisations" />
+    
+    <CommunityList type="organisation" />
+    <div class="cm-signup" id="add">
+      <h2>Add your organisation</h2>
+      <CommunityForm type="organisation" />
+    </div>
   </section>
 </Base>

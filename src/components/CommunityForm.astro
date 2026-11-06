@@ -1,0 +1,125 @@
+---
+// One sign-up form for persons, organisations and projects. It sends to the
+// community script (community.gs); entries appear after approval in the sheet.
+import { ENDPOINT, AGE_GROUPS } from '../lib/community.js';
+import { EMAIL } from '../data/nav.js';
+interface Props { type?: 'person' | 'organisation' | 'project' }
+const { type = '' } = Astro.props;
+const choices = [['person', 'Myself / a person'], ['organisation', 'An organisation'], ['project', 'A project']];
+---
+<form class="form cm-form" data-endpoint={ENDPOINT} novalidate>
+  <fieldset class="cm-choice">
+    <legend>What would you like to add?</legend>
+    {choices.map(([value, label]) => (
+      <label><input type="radio" name="type" value={value} checked={value === type} required /> {label}</label>
+    ))}
+  </fieldset>
+
+  <div class="cm-fields" hidden={!type}>
+    <label><span data-label="person">Name *</span><span data-label="organisation">Name of the organisation *</span><span data-label="project">Project title *</span>
+      <input name="name" required maxlength="200" />
+    </label>
+    <label data-for="person">Affiliation <input name="affiliation" maxlength="200" placeholder="school, music school, university…" /></label>
+    <label data-for="person">Role
+      <select name="role"><option value="">—</option><option>Researcher</option><option>Practitioner</option><option>Researcher and practitioner</option></select>
+    </label>
+    <label data-for="organisation">Type of organisation
+      <input name="orgType" maxlength="100" list="cm-orgtypes" placeholder="e.g. music school" />
+      <datalist id="cm-orgtypes"><option>School</option><option>Music school</option><option>Conservatory</option><option>University</option><option>Association</option><option>Foundation</option></datalist>
+    </label>
+    <label data-for="project">Organisation(s) behind the project <input name="organisations" maxlength="300" /></label>
+    <label data-for="project">Period <input name="period" maxlength="50" placeholder="e.g. 2024–2027" /></label>
+    <div class="cm-two">
+      <label>Country <input name="country" maxlength="80" /></label>
+      <label>City <input name="city" maxlength="80" /></label>
+    </div>
+    <label>Instrument(s) <input name="instruments" maxlength="200" placeholder="e.g. recorder, violin, piano" /></label>
+    <fieldset class="cm-ages">
+      <legend>Age group(s)</legend>
+      {AGE_GROUPS.map((a) => <label><input type="checkbox" name="ages" value={a} /> {a}</label>)}
+    </fieldset>
+    <label><span data-label="person">A short note on what you do</span><span data-label="organisation">A short note on what you offer</span><span data-label="project">A short note on what the project does</span>
+      <textarea name="note" rows="4" maxlength="800"></textarea>
+    </label>
+    <label>Link <input name="link" type="url" maxlength="300" placeholder="https://" /></label>
+    <label><span data-label="person">Photo (optional)</span><span data-label="organisation">Logo (optional)</span><span data-label="project">Photo or logo (optional)</span>
+      <input name="photo" type="file" accept="image/*" />
+    </label>
+    <label>Your email * <input name="email" type="email" required maxlength="200" />
+      <span class="note">Only for us, to contact you about your entry. It is never shown on the site.</span>
+    </label>
+    <label class="hp" aria-hidden="true">Leave empty <input name="website2" tabindex="-1" autocomplete="off" /></label>
+    <label class="cm-consent"><input type="checkbox" name="consent" required /> I agree that this information and image are shown on ecime.org. *</label>
+    <button type="submit">Send</button>
+    <p class="note cm-status" role="status"></p>
+    <p class="note">Entries appear after a short check. To change or remove an entry later, write to <a class="line" href={`mailto:${EMAIL}`}>{EMAIL}</a>.</p>
+  </div>
+</form>
+
+<script>
+  // Shrinks a photo in the browser to at most 600 px, so uploads stay small.
+  function shrink(file) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, 600 / Math.max(img.width, img.height));
+        const c = document.createElement('canvas');
+        c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+        ctx.drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(img.src);
+        resolve(c.toDataURL('image/jpeg', 0.85));
+      };
+      img.onerror = () => reject(new Error('This image could not be read.'));
+      img.src = URL.createObjectURL(file);
+    });
+  }
+
+  for (const form of document.querySelectorAll('.cm-form')) {
+    const fields = form.querySelector('.cm-fields');
+    const status = form.querySelector('.cm-status');
+    const show = () => {
+      const type = form.querySelector('input[name=type]:checked')?.value;
+      fields.hidden = !type;
+      for (const el of form.querySelectorAll('[data-for]')) el.hidden = el.dataset.for !== type;
+      for (const el of form.querySelectorAll('[data-label]')) el.hidden = el.dataset.label !== type;
+    };
+    form.addEventListener('change', (e) => { if (e.target.name === 'type') show(); });
+    show();
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+      const f = new FormData(form);
+      if (!form.dataset.endpoint) {
+        status.textContent = 'The form is not open yet. Please write to info@ecime.org in the meantime.';
+        return;
+      }
+      const button = form.querySelector('button');
+      button.disabled = true;
+      status.textContent = 'Sending…';
+      try {
+        const body = {
+          type: f.get('type'), name: f.get('name'), affiliation: f.get('affiliation'), role: f.get('role'),
+          orgType: f.get('orgType'), organisations: f.get('organisations'), period: f.get('period'),
+          country: f.get('country'), city: f.get('city'), instruments: f.get('instruments'),
+          ages: f.getAll('ages').join(', '), note: f.get('note'), link: f.get('link'),
+          email: f.get('email'), website2: f.get('website2'), consent: f.get('consent') === 'on',
+        };
+        const file = f.get('photo');
+        if (file && file.size) body.photo = await shrink(file);
+        // Plain text avoids a CORS preflight, which Google scripts don't answer.
+        const res = await fetch(form.dataset.endpoint, { method: 'POST', body: JSON.stringify(body), headers: { 'Content-Type': 'text/plain;charset=utf-8' } });
+        const out = await res.json();
+        if (!out.ok) throw new Error(out.error || 'not saved');
+        form.reset(); show();
+        status.textContent = 'Thank you! Your entry will appear on the site after a short check.';
+      } catch (err) {
+        status.textContent = 'Sending did not work (' + err.message + '). Please try again, or write to info@ecime.org.';
+      } finally {
+        button.disabled = false;
+      }
+    });
+  }
+</script>

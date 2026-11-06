@@ -1,0 +1,58 @@
+---
+// The approved entries of one type, written into the page at build time and
+// refreshed live from the sheet in the visitor's browser, like the publications.
+import { SHEET_CSV_URL, recordsFromCSV, listHtml } from '../lib/community.js';
+import { fetchSheet } from '../lib/publications.js';
+import snapshot from '../data/community-snapshot.json';
+interface Props { type: 'person' | 'organisation' | 'project' }
+const { type } = Astro.props;
+
+let records = snapshot;
+try {
+  records = recordsFromCSV(await fetchSheet(SHEET_CSV_URL));
+} catch (err) {
+  console.warn('[community] Using the saved copy: the sheet could not be read.', err.message);
+}
+const mine = records.filter((r) => r.type === type);
+const dataJson = JSON.stringify(mine).replace(/</g, '\\u003c');
+---
+<div class="cm-app" data-type={type}>
+  <div class="pb-controls cm-controls">
+    <span><label for={`cm-group-${type}`}>Group by</label><select id={`cm-group-${type}`} class="cm-group-by">
+      <option value="name">name (A–Z)</option>
+      <option value="country">country</option>
+      <option value="ages">age group</option>
+      <option value="category">instrument</option>
+    </select></span>
+    <span><input type="search" class="cm-q" aria-label="Search" placeholder="name, place, instrument…" size="22" /></span>
+    <span class="pb-count cm-count">{mine.length}</span>
+  </div>
+  <div class="cm-list" set:html={listHtml(mine, 'name')}></div>
+  <script type="application/json" class="cm-data" set:html={dataJson}></script>
+</div>
+
+<script>
+  import { SHEET_CSV_URL, recordsFromCSV, listHtml, haystack } from '../lib/community.js';
+  import { fetchSheet } from '../lib/publications.js';
+
+  for (const app of document.querySelectorAll('.cm-app')) {
+    const type = app.dataset.type;
+    const $ = (sel) => app.querySelector(sel);
+    let records = JSON.parse($('.cm-data').textContent);
+
+    function draw() {
+      const q = $('.cm-q').value.trim().toLowerCase();
+      const hit = records.filter((r) => !q || haystack(r).includes(q));
+      $('.cm-count').textContent = hit.length + (hit.length === 1 ? ' entry' : ' entries');
+      const html = listHtml(hit, $('.cm-group-by').value);
+      if ($('.cm-list').innerHTML !== html) $('.cm-list').innerHTML = html;
+    }
+    $('.cm-group-by').addEventListener('change', draw);
+    $('.cm-q').addEventListener('input', draw);
+    draw();
+
+    fetchSheet(SHEET_CSV_URL, { live: true })
+      .then((text) => { records = recordsFromCSV(text).filter((r) => r.type === type); draw(); })
+      .catch(() => {});
+  }
+</script>

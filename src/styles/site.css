@@ -118,3 +118,41 @@ footer { border-top: 1px solid var(--line); }
 /* Card titles (Welcome, News) in the white of "Early Childhood", so they stand out (user, 2026-11-06) */
 .card p.label { color: var(--ink); font-weight: 600; }
 .card #news-list { margin-top: 12px; }
+
+/* Community: entries from the ECIME_community sheet, and the sign-up form */
+.cm-app { margin-top: 28px; }
+.cm-controls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; padding: 12px 14px; background: var(--panel); border: 1px solid var(--line); font-size: 14px; color: var(--soft); }
+.cm-controls > span { display: inline-flex; align-items: center; gap: 6px; }
+.cm-controls select, .cm-controls input { height: 34px; padding: 0 8px; background: var(--bg); border: 1px solid var(--line); color: var(--ink); font: inherit; }
+.cm-controls .pb-count { margin-left: auto; }
+.cm-group { font-size: 26px; margin: 34px 0 14px; }
+.cm-group span { font: 400 14px var(--body); color: var(--soft); margin-left: 4px; }
+.cm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 18px; margin-top: 22px; }
+.cm-item { display: grid; grid-template-columns: 76px 1fr; gap: 16px; padding: 20px; border: 1px solid var(--line); }
+.cm-pic { width: 76px; height: 76px; border-radius: 50%; object-fit: cover; background: #fff; }
+.cm-initials { display: flex; align-items: center; justify-content: center; background: var(--panel); border: 1px solid var(--line); color: var(--orange); font-family: var(--head); font-size: 26px; }
+.cm-item h3 { font-size: 22px; margin: 0 0 4px; }
+.cm-item h3 a:hover { color: var(--orange); }
+.cm-item p { margin: 0; font-size: 15px; }
+.cm-line { color: var(--ink); }
+.cm-facts { color: var(--orange); margin-top: 4px !important; }
+.cm-note { color: var(--soft); margin-top: 8px !important; }
+.cm-link { display: inline-block; margin-top: 8px; font-size: 15px; color: var(--orange); }
+.cm-empty { color: var(--soft); margin-top: 22px; }
+.cm-signup { margin-top: 64px; padding-top: 40px; border-top: 1px solid var(--line); }
+.cm-signup h2 { font-size: 30px; margin: 0 0 18px; }
+.cm-form fieldset { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.cm-form legend { font-size: 15px; color: var(--soft); margin-bottom: 8px; width: 100%; }
+.cm-form fieldset label { display: inline-flex; flex-direction: row; align-items: center; gap: 8px; color: var(--ink); }
+.cm-choice label { padding: 8px 14px; border: 1px solid var(--line); cursor: pointer; }
+.cm-choice label:has(input:checked) { border-color: var(--orange); color: var(--orange); }
+.cm-fields { display: grid; gap: 14px; margin-top: 18px; }
+.cm-fields[hidden], .cm-fields [hidden] { display: none !important; }
+.cm-two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.cm-form select { font: inherit; color: var(--ink); background: var(--panel); border: 1px solid var(--line); padding: 10px 12px; }
+.cm-form input[type=file] { color: var(--soft); }
+.cm-form .cm-consent { display: flex; flex-direction: row; gap: 10px; align-items: flex-start; color: var(--ink); }
+.cm-form .cm-consent input { margin-top: 5px; }
+.cm-form .hp { position: absolute; left: -9999px; }
+.cm-status:empty { display: none; }
+@media (max-width: 560px) { .cm-two { grid-template-columns: 1fr; } .cm-grid { grid-template-columns: 1fr; } .cm-controls > span { flex: 1 1 100%; } .cm-controls .pb-count { margin-left: 0; } }

@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import { FACEBOOK } from '../data/nav.js';
 import CommunityNav from '../components/CommunityNav.astro';
+import CommunityForm from '../components/CommunityForm.astro';
 ---
 <Base title="Community | ECiME" description="Building a community around instrumental music teaching and learning in early childhood: present yourself, your organisation or your research." path="/community" heading="Building a Community">
   <section class="wrap split">
@@ -10,6 +11,12 @@ import CommunityNav from '../components/CommunityNav.astro';
       <p>Via this page, you can present yourself and your work, your organisation, your research,…</p>
       <p>Visit also the <a class="line" href={FACEBOOK} target="_blank" rel="noopener">Facebook group</a>.</p>
       <div style="margin-top:28px"><CommunityNav /></div>
+    </div>
+  </section>
+  <section class="wrap" style="padding-top:0">
+    <div class="cm-signup" id="add" style="margin-top:0">
+      <h2>Add yourself, your organisation or your project</h2>
+      <CommunityForm />
     </div>
   </section>
 </Base>
