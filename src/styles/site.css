@@ -70,6 +70,7 @@ a.card:hover { border-color: var(--orange); }
 .pills { display: flex; flex-wrap: wrap; gap: 10px; padding: 0; margin: 0; list-style: none; }
 .pills a, .pills span { display: inline-block; padding: 8px 16px; border: 1px solid var(--line); }
 .pills a:hover { border-color: var(--orange); }
+.pills a.on { border-color: var(--orange); color: var(--orange); }
 
 /* Instrument galleries: white product photos sit on light tiles */
 .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin: 0 0 40px; }

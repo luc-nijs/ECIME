@@ -6,8 +6,10 @@ interface Props {
   title: string; description?: string; path: string; noindex?: boolean;
   // Page header: a title, an optional line under it, and an optional photo that fades behind it.
   heading?: string; lead?: string; image?: string; home?: boolean;
+  // A page outside the menu that should still light up a menu item, e.g. the community subpages.
+  parent?: string;
 }
-const { title, description = '', path, noindex = false, heading, lead, image, home = false } = Astro.props;
+const { title, description = '', path, noindex = false, heading, lead, image, home = false, parent } = Astro.props;
 
 const site = Astro.site ?? 'https://www.ecime.org';
 const canonical = new URL(path === '/' ? '/' : `${path}/`, site).href;
@@ -27,7 +29,7 @@ const siteData = {
 };
 
 // A page in a dropdown keeps its parent highlighted, as on the Wix site.
-const isOn = (item) => item.href === path || (item.children ?? []).some((c) => c.href === path);
+const isOn = (item) => item.href === path || item.href === parent || (item.children ?? []).some((c) => c.href === path);
 ---
 <!doctype html>
 <html lang="en">
