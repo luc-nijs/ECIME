@@ -2,7 +2,15 @@
 // /podcast, /survey, /video4survey and /surveythanks stay out of the menu, as on Wix.
 export const nav = [
   { label: 'Home', href: '/' },
-  { label: 'Community', href: '/community' },
+  {
+    label: 'Community',
+    href: '/community',
+    children: [
+      { label: 'Individuals', href: '/individuals' },
+      { label: 'Organisations', href: '/organisations' },
+      { label: 'Projects', href: '/educational-projects' },
+    ],
+  },
   {
     label: 'Research',
     href: '/research',
