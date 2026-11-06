@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import MailForm from '../components/MailForm.astro';
+---
+<Base title="Suggest an ECiME Publication | ECiME" description="Suggest a publication on instrumental music learning and teaching in early childhood for the ECiME publications list." path="/suggest-publication" heading="Suggest an ECiME publication" image="/images/publications.jpg">
+  <section class="wrap split">
+    <div class="prose">
+      <p>Via this form, you can suggest publications to be listed at the <a class="line" href="/publications">Research_Publications</a> page. Please use APA 7 style, and add a DOI link if it exists. Thanks!</p>
+    </div>
+    <MailForm subject="Suggested publication via website" fields={[
+      { name: 'name', label: 'Your name', required: true },
+      { name: 'publication', label: 'Publication (APA 7, with DOI link)', area: true, required: true },
+    ]} button="Submit" />
+  </section>
+</Base>

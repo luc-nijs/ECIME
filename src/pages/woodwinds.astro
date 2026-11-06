@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import InstrumentNav from '../components/InstrumentNav.astro';
+const clarinet = [['clarineo.jpg', 'Clarineo'], ['dood.jpg', 'Dood']];
+const flute = [['mini-d-flute.jpg', 'Mini-D flute'], ['nuvo-toot.jpg', 'Nuvo Toot'], ['bamboo-flute.jpg', '']];
+---
+<Base title="Woodwind Instruments for Young Children | ECiME" description="Clarinets and flutes made for young children, such as the Clarineo, the Dood, the Nuvo Toot and the Mini-D flute." path="/woodwinds" heading="Woodwind Instruments for Young Children">
+  <section class="wrap">
+    <h2>Clarinet</h2>
+    <div class="gallery">
+      {clarinet.map(([src, name]) => <figure><img src={`/images/${src}`} alt={name || 'Clarinet'} loading="lazy" />{name && <figcaption>{name}</figcaption>}</figure>)}
+    </div>
+    <h2>Flute</h2>
+    <div class="gallery">
+      {flute.map(([src, name]) => <figure><img src={`/images/${src}`} alt={name || 'Bamboo flute'} loading="lazy" />{name && <figcaption>{name}</figcaption>}</figure>)}
+    </div>
+    <InstrumentNav path="/woodwinds" />
+  </section>
+</Base>

@@ -1,0 +1,20 @@
+---
+import Base from '../layouts/Base.astro';
+import MailForm from '../components/MailForm.astro';
+import { EMAIL } from '../data/nav.js';
+---
+<Base title="Contact | ECiME" description="Contact ECiME, represented by Luc Nijs, University of Luxembourg." path="/contact" heading="Contact">
+  <section class="wrap split">
+    <div class="prose">
+      <p class="label">Representation</p>
+      <p>Luc Nijs<br /><a class="line" href={`mailto:${EMAIL}`}>{EMAIL}</a></p>
+      <p>Université du Luxembourg<br />Maison des Sciences Humaines<br />11, Porte des Sciences<br />L-4366 Esch-sur-Alzette</p>
+    </div>
+    <MailForm subject="via website" fields={[
+      { name: 'name', label: 'Name', required: true },
+      { name: 'email', label: 'Email', required: true },
+      { name: 'subject', label: 'Subject' },
+      { name: 'message', label: 'Message', area: true, required: true },
+    ]} button="Submit" />
+  </section>
+</Base>

@@ -1,0 +1,59 @@
+---
+import Base from '../layouts/Base.astro';
+import { SHEET_CSV_URL, recordsFromCSV, current, newsHtml } from '../lib/news.js';
+import { fetchSheet } from '../lib/publications.js';
+import snapshot from '../data/news-snapshot.json';
+
+// The news is written into the page when the site is built, so search engines
+// can read it. The browser then refreshes it from the sheet for every visitor.
+// If the sheet can't be read during a build, the saved copy keeps the news there.
+let records = snapshot;
+try {
+  records = recordsFromCSV(await fetchSheet(SHEET_CSV_URL));
+} catch (err) {
+  console.warn('[news] Using the saved copy: the sheet could not be read.', err.message);
+}
+const shown = current(records);
+const dataJson = JSON.stringify(records).replace(/</g, '\\u003c');
+---
+<Base
+  title="ECiME | Early Childhood Instrumental Music Education"
+  description="ECiME is all about instrumental music teaching and learning in early childhood: research, instruments for young children and a community to share knowledge and experiences."
+  path="/"
+  home
+  image="/images/home.jpg"
+  heading="Early Childhood <em>Instrumental</em> Music Education"
+>
+  <section class="wrap cards">
+    <div class="card">
+      <p class="label">Welcome</p>
+      <p>This website is all about Instrumental Music Teaching and Learning in Early Childhood.</p>
+      <p>Its goal is to share knowledge and experiences about this wonderful domain.</p>
+    </div>
+    <div class="card" id="news" hidden={!shown.length}>
+      <p class="label">News</p>
+      <div id="news-list" set:html={newsHtml(shown)}></div>
+    </div>
+  </section>
+  <script id="news-data" type="application/json" set:html={dataJson}></script>
+</Base>
+
+<script>
+  import { SHEET_CSV_URL, recordsFromCSV, current, newsHtml } from '../lib/news.js';
+  import { fetchSheet } from '../lib/publications.js';
+
+  function show(records) {
+    const shown = current(records);
+    const list = document.getElementById('news-list');
+    // Redraw only when the news changed, so pictures already showing don't reload.
+    const fresh = document.createElement('div');
+    fresh.innerHTML = newsHtml(shown);
+    if (fresh.innerHTML !== list.innerHTML) list.innerHTML = fresh.innerHTML;
+    document.getElementById('news').hidden = !shown.length;
+  }
+
+  fetchSheet(SHEET_CSV_URL, { live: true })
+    .then((text) => show(recordsFromCSV(text)))
+    // Sheet unreachable: keep the news built into the page, minus anything past its date.
+    .catch(() => show(JSON.parse(document.getElementById('news-data').textContent)));
+</script>

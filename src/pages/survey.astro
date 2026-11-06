@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+const base = 'http://ulsurvey.uni.lu/index.php/963239?lang=';
+const languages = [
+  ['Deutsch', 'de-easy'], ['English', 'en'], ['Español', 'es'], ['Français', 'fr'], ['Polski', 'pl'],
+  ['Português', 'pt'], ['ελληνικά', 'el'], ['Italiano', 'it'], ['Lëtzebuergesch', 'lb'], ['Nederlands', 'nl'],
+];
+---
+<Base title="Survey | ECiME" description="Survey on instrumental music teaching and learning in early childhood, available in ten languages." path="/survey" heading="Survey on Instrumental Music Teaching and Learning in Early Childhood">
+  <section class="wrap">
+    <p><a class="button" href="/video4survey">Check out the video 👉🏼</a></p>
+    <div class="prose" style="margin-top:28px">
+      <p><strong>Important:</strong> you can stop and resume later! Check the button top right…</p>
+    </div>
+    <img src="/images/survey-resume-later.jpg" alt="The survey's top bar, with the Resume later button circled" style="display:block;margin:6px 0 18px" />
+    <div class="prose">
+      <p>In case you wish to complete the survey in several sessions, please DO SAVE your answers… after 60 min there is, unfortunately, a server time-out.</p>
+      <h2>You can choose your preferred language!</h2>
+    </div>
+    <ul class="pills">
+      {languages.map(([name, code]) => <li><a href={base + code} target="_blank" rel="noopener" lang={code.slice(0, 2)}>{name}</a></li>)}
+    </ul>
+  </section>
+</Base>

@@ -1,0 +1,27 @@
+---
+// No form service: the button opens the visitor's own email program with the
+// message filled in, as on lucnijs.be and Kimupe.
+import { EMAIL } from '../data/nav.js';
+interface Props { subject: string; fields: { name: string; label: string; area?: boolean; required?: boolean }[]; button?: string }
+const { subject, fields, button = 'Send' } = Astro.props;
+---
+<form class="form mail-form" data-to={EMAIL} data-subject={subject}>
+  {fields.map((f) => (
+    <label>{f.label}
+      {f.area ? <textarea name={f.name} rows="6" required={f.required} /> : <input name={f.name} required={f.required} />}
+    </label>
+  ))}
+  <button type="submit">{button}</button>
+  <p class="note">This opens your email program with the message ready to send to <a class="line" href={`mailto:${EMAIL}`}>{EMAIL}</a>.</p>
+</form>
+<script>
+  for (const form of document.querySelectorAll('.mail-form')) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const body = [...form.querySelectorAll('input, textarea')]
+        .map((el) => `${el.closest('label').firstChild.textContent.trim()}:\n${el.value.trim()}`)
+        .join('\n\n');
+      location.href = `mailto:${form.dataset.to}?subject=${encodeURIComponent(form.dataset.subject)}&body=${encodeURIComponent(body)}`;
+    });
+  }
+</script>

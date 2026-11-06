@@ -1,0 +1,8 @@
+---
+// The three instrument pages, shown at the bottom of each instrument page as on Wix.
+const { path } = Astro.props;
+const pages = [['Woodwinds', '/woodwinds'], ['Brass', '/brass'], ['Other', '/other']];
+---
+<ul class="pills">
+  {pages.map(([label, href]) => <li><a href={href} class={href === path ? 'line' : ''}>{label}</a></li>)}
+</ul>
