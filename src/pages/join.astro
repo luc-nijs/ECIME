@@ -1,0 +1,20 @@
+---
+// The community sign-up form on a page of its own, outside the menu. The orange
+// buttons on Community and its subpages link here with ?type=person|organisation|project.
+import Base from '../layouts/Base.astro';
+import CommunityForm from '../components/CommunityForm.astro';
+import CommunityNav from '../components/CommunityNav.astro';
+---
+<Base title="Join the Community | ECiME" description="Add yourself, your organisation or your project to the ECiME community on instrumental music teaching and learning in early childhood." path="/join" parent="/community" heading="Join the community">
+  <section class="wrap">
+    <CommunityForm />
+    <div style="margin-top:48px"><CommunityNav /></div>
+  </section>
+</Base>
+
+<script>
+  // Tick the choice named in the address, e.g. /join/?type=organisation.
+  const type = new URLSearchParams(location.search).get('type');
+  const radio = type && document.querySelector(`.cm-form input[name=type][value="${CSS.escape(type)}"]`);
+  if (radio) { radio.checked = true; radio.dispatchEvent(new Event('change', { bubbles: true })); }
+</script>

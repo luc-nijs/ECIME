@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import CommunityNav from '../components/CommunityNav.astro';
 import CommunityList from '../components/CommunityList.astro';
-import CommunityForm from '../components/CommunityForm.astro';
+import JoinButton from '../components/JoinButton.astro';
 ---
 <Base title="Organisations | ECiME Community" description="Method associations, professional networks, foundations and teacher training programmes for instrumental music teaching in early childhood." path="/organisations" parent="/community" heading="Organisations">
   <section class="wrap">
@@ -10,10 +10,7 @@ import CommunityForm from '../components/CommunityForm.astro';
     <div class="prose" style="margin-top:32px">
       <p>Many approaches to teaching instruments to young children are carried by organisations: associations related to a specific method (e.g. Colourstrings, Suzuki, PI), professional networks, foundations and teacher training programmes. They train teachers, develop materials and bring practitioners together across countries. This page lists them, each with its country, the instruments and age groups it works with, and a short note on what it offers.</p>
     </div>
+    <JoinButton type="organisation" label="Add your organisation" />
     <CommunityList type="organisation" />
-    <div class="cm-signup" id="add">
-      <h2>Add your organisation</h2>
-      <CommunityForm type="organisation" />
-    </div>
   </section>
 </Base>

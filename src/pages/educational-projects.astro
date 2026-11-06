@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import CommunityNav from '../components/CommunityNav.astro';
 import CommunityList from '../components/CommunityList.astro';
-import CommunityForm from '../components/CommunityForm.astro';
+import JoinButton from '../components/JoinButton.astro';
 ---
 <Base title="Educational Projects | ECiME Community" description="Educational projects on instrumental music teaching and learning in early childhood." path="/educational-projects" parent="/community" heading="Educational Projects">
   <section class="wrap">
@@ -10,10 +10,7 @@ import CommunityForm from '../components/CommunityForm.astro';
     <div class="prose" style="margin-top:32px">
       <p>New ideas in early childhood instrumental teaching often start as projects: a pilot with a new instrument, a programme for group lessons, a study in a few classrooms, a partnership between a school and a music school. Many of them stay local and are hard to find from elsewhere. This page collects them. Here you'll find each project with the organisations behind it, its period and a short note on what it does.</p>
     </div>
+    <JoinButton type="project" label="Add your project" />
     <CommunityList type="project" />
-    <div class="cm-signup" id="add">
-      <h2>Add your project</h2>
-      <CommunityForm type="project" />
-    </div>
   </section>
 </Base>

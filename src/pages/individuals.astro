@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import CommunityNav from '../components/CommunityNav.astro';
 import CommunityList from '../components/CommunityList.astro';
-import CommunityForm from '../components/CommunityForm.astro';
+import JoinButton from '../components/JoinButton.astro';
 ---
 <Base title="Individuals | ECiME Community" description="Researchers and practitioners in instrumental music teaching and learning in early childhood, with their affiliation and work." path="/individuals" parent="/community" heading="Individuals">
   <section class="wrap">
@@ -10,10 +10,7 @@ import CommunityForm from '../components/CommunityForm.astro';
     <div class="prose" style="margin-top:32px">
       <p>Instrumental teaching with young children is still a rather small field, and the people in it are spread across countries, schools, conservatories and universities. This page brings them together. Here you'll find practitioners who teach an instrument in the early years and researchers who study it, each with their affiliation and a short note on what they do.</p>
     </div>
+    <JoinButton type="person" label="Add yourself" />
     <CommunityList type="person" />
-    <div class="cm-signup" id="add">
-      <h2>Add yourself</h2>
-      <CommunityForm type="person" />
-    </div>
   </section>
 </Base>

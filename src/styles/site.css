@@ -156,3 +156,8 @@ footer { border-top: 1px solid var(--line); }
 .cm-form .hp { position: absolute; left: -9999px; }
 .cm-status:empty { display: none; }
 @media (max-width: 560px) { .cm-two { grid-template-columns: 1fr; } .cm-grid { grid-template-columns: 1fr; } .cm-controls > span { flex: 1 1 100%; } .cm-controls .pb-count { margin-left: 0; } }
+
+/* The orange button to the sign-up page (user, 2026-11-06) */
+.join { margin: 28px 0 0; }
+.button-solid { display: inline-block; padding: 13px 24px; background: var(--orange); color: #1a1310; font-weight: 700; transition: background .15s; }
+.button-solid:hover { background: #f9a77f; }

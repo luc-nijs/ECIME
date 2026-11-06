@@ -1,0 +1,6 @@
+---
+// The orange button that leads to the sign-up form on /join.
+interface Props { type?: 'person' | 'organisation' | 'project'; label: string }
+const { type, label } = Astro.props;
+---
+<p class="join"><a class="button-solid" href={type ? `/join/?type=${type}` : '/join/'}>{label} →</a></p>
