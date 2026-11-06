@@ -41,7 +41,10 @@ h1, h2, h3 { font-family: var(--head); font-weight: 400; line-height: 1.15; }
 .lead { font-size: 21px; color: var(--soft); max-width: 56ch; margin: 20px 0 0; }
 .hero-home { min-height: 88vh; display: flex; align-items: flex-end; }
 .hero-home .hero-text { width: 100%; padding-bottom: 64px; }
-.hero-home h1 { font-size: clamp(40px, 6.6vw, 88px); line-height: 1.04; max-width: 14ch; }
+/* Three lines that spell the logo: EC white, i light orange, ME orange (user, 2026-11-06) */
+.hero-home h1 { font-size: clamp(38px, 5.6vw, 76px); line-height: 1.06; max-width: none; }
+.hero-home h1 em { color: #f9a77f; }
+.hero-home h1 .music { color: var(--orange); }
 .hero-home .hero-img { opacity: .42; }
 .hero-home::after { background: linear-gradient(180deg, rgba(20,19,18,.75) 0%, rgba(20,19,18,.1) 35%, rgba(20,19,18,.55) 70%, var(--bg) 100%) !important; }
 
