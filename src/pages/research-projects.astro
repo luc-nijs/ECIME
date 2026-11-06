@@ -1,9 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import ResearchNav from '../components/ResearchNav.astro';
-import { EMAIL } from '../data/nav.js';
-// Until the submission form for research projects exists, the button opens an email.
-const submit = `mailto:${EMAIL}?subject=${encodeURIComponent('Research project for ECiME')}`;
+import ResearchList from '../components/ResearchList.astro';
 ---
 <Base title="Research Projects | ECiME" description="Ongoing and completed research projects on instrumental music learning and teaching in early childhood." path="/research-projects" heading="Research Projects">
   <section class="wrap">
@@ -11,7 +9,7 @@ const submit = `mailto:${EMAIL}?subject=${encodeURIComponent('Research project f
     <div class="prose" style="margin-top:32px">
       <p>Research on instrumental learning in early childhood is growing, but the projects are spread across countries, disciplines and languages, and many remain little known outside their own network. This page brings ongoing and completed research projects together. Here you'll find each project with the institutions and researchers involved, its period and a short note on its questions and methods.</p>
     </div>
-    <p class="join"><a class="button-solid" href={submit}>Submit a research project →</a></p>
-    <p class="cm-empty">Nothing here yet.</p>
+    <p class="join"><a class="button-solid" href="/submit-research/">Submit a research project →</a></p>
+    <ResearchList />
   </section>
 </Base>

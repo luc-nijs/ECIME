@@ -32,3 +32,6 @@
   #pub-app select, #pub-app input[type="search"] { flex: 1 1 0; min-width: 0; width: 100%; }
   #pub-app .pb-count { margin-left: 0; }
 }
+#pub-app a.pb-badge { color: var(--orange); }
+#pub-app a.pb-badge:hover { border-color: var(--orange); text-decoration: none; }
+#pub-app .pb-project { margin: 22px 0 0; }

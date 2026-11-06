@@ -41,6 +41,7 @@ function itemHtml(r) {
   }
   if (r.isbn) bits.push(' <span class="pb-doi">ISBN ' + esc(r.isbn) + '</span>');
   if (r.instrument) bits.push('<span class="pb-badge">' + esc(r.instrument) + '</span>');
+  if (r.project) bits.push('<a class="pb-badge" href="/publications/?project=' + encodeURIComponent(r.project) + '">' + esc(r.project) + '</a>');
   if (PENDING.test(r.status) && r.year) bits.push('<span class="pb-badge">' + esc(r.year) + '</span>');
   return '<div class="pb-item">' + bits.join('') + '</div>';
 }
@@ -121,6 +122,8 @@ const COLUMN_ALIASES = {
   venue: ['venue', 'journal', 'book', 'source', 'outlet', 'in'],
   type: ['type', 'kind', 'category', 'genre'],
   instrument: ['instrument'],
+  // The research project a publication belongs to: its acronym, or else its title, as on /research-projects.
+  project: ['project'],
   status: ['status', 'stage', 'state'],
   doi: ['doi'],
   url: ['url', 'link', 'website'],
@@ -151,7 +154,7 @@ export function recordsFromCSV(text) {
     // Only an explicit no hides a row, so an empty Publish column is harmless.
     if (/^(n|no|false|0|hide)$/i.test(get('publish'))) continue;
     const rec = {};
-    for (const k of ['authors', 'title', 'venue', 'type', 'instrument', 'status', 'doi', 'url', 'isbn', 'language']) {
+    for (const k of ['authors', 'title', 'venue', 'type', 'instrument', 'project', 'status', 'doi', 'url', 'isbn', 'language']) {
       // Collapse stray line breaks pasted into a cell, so one Enter in the
       // sheet cannot break the list layout.
       if (get(k)) rec[k] = get(k).replace(/\s+/g, ' ').trim();

@@ -57,28 +57,10 @@ const choices = [['person', 'Myself / a person'], ['organisation', 'An organisat
 </form>
 
 <script>
-  // Shrinks a photo in the browser to at most 600 px, so uploads stay small.
-  function shrink(file) {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => {
-        const scale = Math.min(1, 600 / Math.max(img.width, img.height));
-        const c = document.createElement('canvas');
-        c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
-        const ctx = c.getContext('2d');
-        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
-        ctx.drawImage(img, 0, 0, c.width, c.height);
-        URL.revokeObjectURL(img.src);
-        resolve(c.toDataURL('image/jpeg', 0.85));
-      };
-      img.onerror = () => reject(new Error('This image could not be read.'));
-      img.src = URL.createObjectURL(file);
-    });
-  }
+  import { wireForm } from '../scripts/sheetForm.js';
 
   for (const form of document.querySelectorAll('.cm-form')) {
     const fields = form.querySelector('.cm-fields');
-    const status = form.querySelector('.cm-status');
     const show = () => {
       const type = form.querySelector('input[name=type]:checked')?.value;
       fields.hidden = !type;
@@ -87,39 +69,15 @@ const choices = [['person', 'Myself / a person'], ['organisation', 'An organisat
     };
     form.addEventListener('change', (e) => { if (e.target.name === 'type') show(); });
     show();
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (!form.reportValidity()) return;
-      const f = new FormData(form);
-      if (!form.dataset.endpoint) {
-        status.textContent = 'The form is not open yet. Please write to info@ecime.org in the meantime.';
-        return;
-      }
-      const button = form.querySelector('button');
-      button.disabled = true;
-      status.textContent = 'Sending…';
-      try {
-        const body = {
-          type: f.get('type'), name: f.get('name'), affiliation: f.get('affiliation'), role: f.get('role'),
-          orgType: f.get('orgType'), organisations: f.get('organisations'), period: f.get('period'),
-          country: f.get('country'), city: f.get('city'), instruments: f.get('instruments'),
-          ages: f.getAll('ages').join(', '), note: f.get('note'), link: f.get('link'),
-          email: f.get('email'), website2: f.get('website2'), consent: f.get('consent') === 'on',
-        };
-        const file = f.get('photo');
-        if (file && file.size) body.photo = await shrink(file);
-        // Plain text avoids a CORS preflight, which Google scripts don't answer.
-        const res = await fetch(form.dataset.endpoint, { method: 'POST', body: JSON.stringify(body), headers: { 'Content-Type': 'text/plain;charset=utf-8' } });
-        const out = await res.json();
-        if (!out.ok) throw new Error(out.error || 'not saved');
-        form.reset(); show();
-        status.textContent = 'Thank you! Your entry will appear on the site after a short check.';
-      } catch (err) {
-        status.textContent = 'Sending did not work (' + err.message + '). Please try again, or write to info@ecime.org.';
-      } finally {
-        button.disabled = false;
-      }
+    wireForm(form, {
+      imageField: 'photo', imageKey: 'photo', onDone: show,
+      collect: (f) => ({
+        type: f.get('type'), name: f.get('name'), affiliation: f.get('affiliation'), role: f.get('role'),
+        orgType: f.get('orgType'), organisations: f.get('organisations'), period: f.get('period'),
+        country: f.get('country'), city: f.get('city'), instruments: f.get('instruments'),
+        ages: f.getAll('ages').join(', '), note: f.get('note'), link: f.get('link'),
+        email: f.get('email'), website2: f.get('website2'), consent: f.get('consent') === 'on',
+      }),
     });
   }
 </script>

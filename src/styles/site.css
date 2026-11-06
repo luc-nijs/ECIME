@@ -161,3 +161,12 @@ footer { border-top: 1px solid var(--line); }
 .join { margin: 28px 0 0; }
 .button-solid { display: inline-block; padding: 13px 24px; background: var(--orange); color: #1a1310; font-weight: 700; transition: background .15s; }
 .button-solid:hover { background: #f9a77f; }
+
+/* Research projects: wider cards, image optional */
+.rp-grid { grid-template-columns: repeat(auto-fill, minmax(440px, 1fr)); }
+.rp-item.rp-noimg { grid-template-columns: 1fr; }
+.rp-pic { border-radius: 4px; object-fit: contain; }
+.rp-acr { color: var(--soft); font-weight: 400; }
+.rp-soft { color: var(--soft) !important; }
+.rp-links { display: flex; gap: 18px; }
+@media (max-width: 560px) { .rp-grid { grid-template-columns: 1fr; } }

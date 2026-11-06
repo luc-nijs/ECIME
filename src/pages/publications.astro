@@ -34,6 +34,7 @@ const dataJson = JSON.stringify(records).replace(/</g, '\\u003c');
         <span><input type="search" id="pb-q" aria-label="Search publications" placeholder="author, title, journal…" size="20"></span>
         <span class="pb-count" id="pb-count">{countText(records)}</span>
       </div>
+      <p class="pb-project" id="pb-project" hidden></p>
       <div id="pb-list" set:html={listHtml(records, 'none')}></div>
       <div class="pb-status" id="pb-status"></div>
     </div>
@@ -47,12 +48,15 @@ const dataJson = JSON.stringify(records).replace(/</g, '\\u003c');
 
   const $ = (id) => document.getElementById(id);
   let records = [];
+  // /publications/?project=NAME shows only that research project's publications.
+  const project = new URLSearchParams(location.search).get('project') || '';
 
   function applyFilters() {
     const type = $('pb-type').value;
     const from = Number($('pb-from').value), to = Number($('pb-to').value);
     const q = $('pb-q').value.trim().toLowerCase();
     const hit = records.filter((r) => {
+      if (project && (r.project || '').toLowerCase() !== project.toLowerCase()) return false;
       if (type && r.type !== type) return false;
       const y = Number(r.year);
       // Undated and forthcoming items are never filtered out by the year range.
@@ -73,7 +77,7 @@ const dataJson = JSON.stringify(records).replace(/</g, '\\u003c');
   function start(list, note) {
     records = list.map((r) => ({
       ...r,
-      _hay: [r.authors, r.title, r.venue, r.type, r.instrument, r.status, r.year, r.language, r.doi]
+      _hay: [r.authors, r.title, r.venue, r.type, r.instrument, r.project, r.status, r.year, r.language, r.doi]
         .filter(Boolean).join(' ').toLowerCase(),
     }));
     const rank = (a, b) => (TYPE_ORDER.indexOf(a) + 1 || 99) - (TYPE_ORDER.indexOf(b) + 1 || 99);
@@ -84,6 +88,10 @@ const dataJson = JSON.stringify(records).replace(/</g, '\\u003c');
     $('pb-from').value = lo; $('pb-to').value = hi;
     for (const id of ['pb-group', 'pb-type', 'pb-from', 'pb-to']) $(id).addEventListener('change', applyFilters);
     $('pb-q').addEventListener('input', applyFilters);
+    if (project) {
+      $('pb-project').hidden = false;
+      $('pb-project').innerHTML = 'Publications of the research project <strong>' + esc(project) + '</strong> · <a class="line" href="/publications/">show all publications</a>';
+    }
     applyFilters();
     $('pb-status').textContent = note;
   }

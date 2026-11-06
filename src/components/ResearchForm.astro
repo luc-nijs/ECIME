@@ -1,0 +1,69 @@
+---
+// The form for research projects. It sends to researchprojects.gs; projects
+// appear on /research-projects after approval in the Nijs_ECIME_researchprojects sheet.
+import { ENDPOINT } from '../lib/research.js';
+import { AGE_GROUPS } from '../lib/community.js';
+import { EMAIL } from '../data/nav.js';
+---
+<form class="form cm-form rp-form" data-endpoint={ENDPOINT} novalidate>
+  <div class="cm-fields">
+    <label>Project title * <input name="title" required maxlength="300" /></label>
+    <label>Acronym <input name="acronym" maxlength="40" placeholder="optional" /></label>
+    <label>Researchers <input name="researchers" maxlength="400" placeholder="names, separated by commas" /></label>
+    <label>Institution(s) <input name="institutions" maxlength="400" /></label>
+    <div class="cm-two">
+      <label>Country <input name="country" maxlength="120" /></label>
+      <label>Period <input name="period" maxlength="50" placeholder="e.g. 2024–2027" /></label>
+    </div>
+    <fieldset>
+      <legend>Status</legend>
+      <label><input type="radio" name="status" value="ongoing" /> Ongoing</label>
+      <label><input type="radio" name="status" value="completed" /> Completed</label>
+    </fieldset>
+    <div class="cm-two">
+      <label>Discipline / field
+        <input name="discipline" maxlength="120" list="rp-disciplines" placeholder="e.g. music education" />
+        <datalist id="rp-disciplines"><option>Music education</option><option>Music psychology</option><option>Developmental psychology</option><option>Neuroscience</option><option>Musicology</option><option>Education</option></datalist>
+      </label>
+      <label>Funding <input name="funding" maxlength="200" placeholder="optional" /></label>
+    </div>
+    <label>Research questions and aims <textarea name="aims" rows="4" maxlength="1200"></textarea></label>
+    <label>Methods <input name="methods" maxlength="600" placeholder="e.g. observation study in three music schools" /></label>
+    <label>Instrument(s) <input name="instruments" maxlength="200" placeholder="e.g. recorder, violin, piano" /></label>
+    <fieldset class="cm-ages">
+      <legend>Age group(s)</legend>
+      {AGE_GROUPS.map((a) => <label><input type="checkbox" name="ages" value={a} /> {a}</label>)}
+    </fieldset>
+    <label>Project website <input name="link" type="url" maxlength="300" placeholder="https://" /></label>
+    <label>Publications from the project
+      <textarea name="publications" rows="3" maxlength="2000" placeholder="references in APA 7, with DOI links if they exist"></textarea>
+      <span class="note">We add them to the <a class="line" href="/publications">publications list</a>, linked to the project.</span>
+    </label>
+    <label>Image or logo (optional) <input name="image" type="file" accept="image/*" /></label>
+    <label>Your email * <input name="email" type="email" required maxlength="200" />
+      <span class="note">Only for us, to contact you about your project. It is never shown on the site.</span>
+    </label>
+    <label class="hp" aria-hidden="true">Leave empty <input name="website2" tabindex="-1" autocomplete="off" /></label>
+    <label class="cm-consent"><input type="checkbox" name="consent" required /> I agree that this information and image are shown on ecime.org. *</label>
+    <button type="submit">Send</button>
+    <p class="note cm-status" role="status"></p>
+    <p class="note">Projects appear after a short check. To change or remove a project later, write to <a class="line" href={`mailto:${EMAIL}`}>{EMAIL}</a>.</p>
+  </div>
+</form>
+
+<script>
+  import { wireForm } from '../scripts/sheetForm.js';
+  for (const form of document.querySelectorAll('.rp-form')) {
+    wireForm(form, {
+      imageField: 'image', imageKey: 'image',
+      collect: (f) => ({
+        title: f.get('title'), acronym: f.get('acronym'), researchers: f.get('researchers'),
+        institutions: f.get('institutions'), country: f.get('country'), period: f.get('period'),
+        status: f.get('status') || '', discipline: f.get('discipline'), funding: f.get('funding'),
+        aims: f.get('aims'), methods: f.get('methods'), instruments: f.get('instruments'),
+        ages: f.getAll('ages').join(', '), link: f.get('link'), publications: f.get('publications'),
+        email: f.get('email'), website2: f.get('website2'), consent: f.get('consent') === 'on',
+      }),
+    });
+  }
+</script>

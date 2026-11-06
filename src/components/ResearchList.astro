@@ -1,0 +1,70 @@
+---
+// Approved research projects, written into the page at build time and
+// refreshed live in the visitor's browser. A project gets a "publications →"
+// link when the publications sheet names it in its Project column.
+import { SHEET_CSV_URL, recordsFromCSV, listHtml } from '../lib/research.js';
+import * as pubs from '../lib/publications.js';
+import snapshot from '../data/research-snapshot.json';
+import pubSnapshot from '../data/publications-snapshot.json';
+
+let records = snapshot;
+try {
+  records = recordsFromCSV(await pubs.fetchSheet(SHEET_CSV_URL));
+} catch (err) {
+  console.warn('[research] Using the saved copy: the sheet could not be read.', err.message);
+}
+let pubRecords = pubSnapshot;
+try {
+  pubRecords = pubs.recordsFromCSV(await pubs.fetchSheet(pubs.SHEET_CSV_URL));
+} catch {}
+const withPubs = new Set(pubRecords.map((p) => (p.project || '').toLowerCase()).filter(Boolean));
+const dataJson = JSON.stringify({ records, withPubs: [...withPubs] }).replace(/</g, '\\u003c');
+---
+<div class="cm-app rp-app">
+  <div class="pb-controls cm-controls">
+    <span><label for="rp-group">Group by</label><select id="rp-group" class="cm-group-by">
+      <option value="title">title (A–Z)</option>
+      <option value="status">status</option>
+      <option value="country">country</option>
+      <option value="discipline">discipline</option>
+      <option value="ages">age group</option>
+      <option value="category">instrument</option>
+    </select></span>
+    <span><input type="search" class="cm-q" aria-label="Search" placeholder="title, researcher, place…" size="22" /></span>
+    <span class="pb-count cm-count">{records.length}</span>
+  </div>
+  <div class="cm-list" set:html={listHtml(records, 'title', withPubs)}></div>
+  <script type="application/json" class="rp-data" set:html={dataJson}></script>
+</div>
+
+<script>
+  import { SHEET_CSV_URL, recordsFromCSV, listHtml, haystack } from '../lib/research.js';
+  import * as pubs from '../lib/publications.js';
+
+  const app = document.querySelector('.rp-app');
+  const $ = (sel) => app.querySelector(sel);
+  const saved = JSON.parse($('.rp-data').textContent);
+  let records = saved.records;
+  let withPubs = new Set(saved.withPubs);
+
+  function draw() {
+    const q = $('.cm-q').value.trim().toLowerCase();
+    const hit = records.filter((r) => !q || haystack(r).includes(q));
+    $('.cm-count').textContent = hit.length + (hit.length === 1 ? ' project' : ' projects');
+    const html = listHtml(hit, $('.cm-group-by').value, withPubs);
+    if ($('.cm-list').innerHTML !== html) $('.cm-list').innerHTML = html;
+  }
+  $('.cm-group-by').addEventListener('change', draw);
+  $('.cm-q').addEventListener('input', draw);
+  draw();
+
+  pubs.fetchSheet(SHEET_CSV_URL, { live: true })
+    .then((text) => { records = recordsFromCSV(text); draw(); })
+    .catch(() => {});
+  pubs.fetchSheet(pubs.SHEET_CSV_URL, { live: true })
+    .then((text) => {
+      withPubs = new Set(pubs.recordsFromCSV(text).map((p) => (p.project || '').toLowerCase()).filter(Boolean));
+      draw();
+    })
+    .catch(() => {});
+</script>
