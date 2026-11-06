@@ -16,6 +16,7 @@ export const nav = [
     href: '/research',
     children: [
       { label: 'Publications', href: '/publications' },
+      { label: 'Projects', href: '/research-projects' },
       { label: 'Suggest a publication', href: '/suggest-publication' },
     ],
   },

@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import '../styles/publications.css';
+import ResearchNav from '../components/ResearchNav.astro';
 import { SHEET_CSV_URL, recordsFromCSV, listHtml, countText, fetchSheet } from '../lib/publications.js';
 import snapshot from '../data/publications-snapshot.json';
 
@@ -19,7 +20,8 @@ const dataJson = JSON.stringify(records).replace(/</g, '\\u003c');
 ---
 <Base title="Publications | ECiME" description="Research publications on instrumental music learning and teaching in early childhood, to filter by type and year or search by author and title." path="/publications" heading="Publications">
   <section class="wrap">
-    <div id="pub-app">
+    <ResearchNav path="/publications" />
+    <div id="pub-app" style="margin-top:28px">
       <div class="pb-controls">
         <span><label for="pb-group">Group by</label><select id="pb-group">
           <option value="none">author (A–Z)</option>

@@ -1,0 +1,10 @@
+---
+// Buttons to switch between the research subpages, like CommunityNav.
+const { path = '' } = Astro.props;
+const pages = [['Publications', '/publications'], ['Research Projects', '/research-projects']];
+---
+<ul class="pills">
+  {pages.map(([label, href]) => (
+    <li><a href={href} class={href === path ? 'on' : ''} aria-current={href === path ? 'page' : undefined}>{label}</a></li>
+  ))}
+</ul>
