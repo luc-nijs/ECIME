@@ -113,3 +113,7 @@ footer { border-top: 1px solid var(--line); }
 
 /* Community figure at two thirds of its column (user, 2026-11-06) */
 .split img.community-figure { width: 67%; margin: 0 auto; }
+
+/* Card titles (Welcome, News) in the white of "Early Childhood", so they stand out (user, 2026-11-06) */
+.card p.label { color: var(--ink); font-weight: 600; }
+.card #news-list { margin-top: 12px; }
